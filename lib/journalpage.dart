@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'globals.dart';
+
 class JournalPage extends StatefulWidget {
   final String selectedDate;
   final int selectedID;
@@ -14,8 +16,8 @@ class JournalPage extends StatefulWidget {
 
 class _JournalPageState extends State<JournalPage> {
   Future<Map<String, dynamic>> fetchJournalEntry() async {
-    final String url =
-        'http://172.29.10.200:8080/panic/${widget.selectedID}/deleteUpdateEntry/';
+    String url =
+        'http://${Globals.ipAddress}/panic/${widget.selectedID}/deleteUpdateEntry/';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'package:panic_application/journalpage.dart';
+import 'globals.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> fetchDates() async {
-    const String url = 'http://172.29.10.200:8080/panic/getListOfJournals/';
+    String url = 'http://172.29.10.200:8080//panic/getListOfJournals/';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

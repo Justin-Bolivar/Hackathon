@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 
 import 'package:panic_application/settings.dart';
 
+import 'globals.dart';
+
 class WriteJournalPage extends StatefulWidget {
   @override
   _WriteJournalPageState createState() => _WriteJournalPageState();
@@ -14,7 +16,7 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> _sendPostRequest() async {
-    const String url = 'http://172.29.10.200:8080//panic/create/';
+    String url = 'http://${Globals.ipAddress}//panic/create/';
     final String text = _controller.text;
 
     final DateTime now = DateTime.now();
