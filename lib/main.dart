@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:panic_application/homepage.dart';
-import 'package:panic_application/profilepage.dart';
+import 'package:panic_application/settings.dart';
 import 'package:panic_application/writepage.dart';
 
 void main() {
