@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:intl/intl.dart'; // Import the intl package
+import 'package:intl/intl.dart';
+import 'package:panic_application/globals.dart';
 
 import 'package:panic_application/settings.dart';
 
@@ -14,19 +15,30 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> _sendPostRequest() async {
-    final String url = 'api here';
+    const String url = 'http://172.30.1.190:8080/panic/create/';
     final String text = _controller.text;
+
+    final DateTime now = DateTime.now();
+    final String formattedDate = DateFormat('MMMM d').format(now);
+    final String formattedTime = DateFormat('h:mm a').format(now);
+
+    final String dateString = '$formattedDate';
+    final String timeString = ' $formattedTime';
 
     final response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'text': text,
-      }),
+      body: jsonEncode(
+        <String, dynamic>{
+          'date': dateString,
+          'time': timeString,
+          'isPanic': true,
+          'thoughts': text,
+        },
+      ),
     );
-
     if (response.statusCode == 201) {
       print('POST request successful');
     } else {
@@ -36,7 +48,6 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the current date and time
     final DateTime now = DateTime.now();
     final String formattedDate = DateFormat('MMMM d').format(now);
     final String formattedTime = DateFormat('h:mm a').format(now);
