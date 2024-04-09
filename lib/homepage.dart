@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:math'; // Import the math library for random number generation
-
+import 'dart:math';
 import 'package:panic_application/journalpage.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,9 +14,11 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   List<String> dates = [];
   List<int> ids = [];
+  List<String> topEmotions = [];
   late AnimationController _animationController;
   late Animation<double> _animation;
-  int bpm = 80; // Initial BPM value
+  int bpm = 80;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -28,17 +28,18 @@ class _HomePageState extends State<HomePage>
       vsync: this,
       duration: const Duration(milliseconds: 500),
     )..repeat(reverse: true);
+
     _animation = Tween<double>(begin: 1.0, end: 1.3).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    // Start updating the BPM value periodically
     startBPMUpdate();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _timer?.cancel(); // Cancel the timer if it is not null
     super.dispose();
   }
 
@@ -50,8 +51,11 @@ class _HomePageState extends State<HomePage>
       setState(() {
         List<dynamic> data = jsonDecode(response.body);
         dates = data.map((item) => item['date'] as String).toList();
-
         ids = data.map((item) => item['id'] as int).toList();
+        topEmotions = data.map((item) {
+          var topEmotion = item['emotions'][0][0];
+          return '${topEmotion['label']} (${(topEmotion['score'] * 100).toStringAsFixed(2)}%)';
+        }).toList();
       });
     } else {
       throw Exception('Failed to load dates');
@@ -59,7 +63,7 @@ class _HomePageState extends State<HomePage>
   }
 
   void startBPMUpdate() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         bpm = Random().nextInt(21) + 70;
       });
@@ -142,12 +146,24 @@ class _HomePageState extends State<HomePage>
                           width: 300,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              dates[index],
-                              style: const TextStyle(
-                                fontSize: 20.0,
-                                color: Color(0xFFFFFBF0),
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  dates[index],
+                                  style: const TextStyle(
+                                    fontSize: 20.0,
+                                    color: Color(0xFFFFFBF0),
+                                  ),
+                                ),
+                                Text(
+                                  topEmotions[index],
+                                  style: const TextStyle(
+                                    fontSize: 20.0,
+                                    color: Color(0xFFFFFBF0),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

@@ -6,40 +6,39 @@ class JournalPage extends StatefulWidget {
   final String selectedDate;
   final int selectedID;
 
-  JournalPage({Key? key, required this.selectedDate, required this.selectedID})
-      : super(key: key);
+  JournalPage({required this.selectedDate, required this.selectedID});
 
   @override
   _JournalPageState createState() => _JournalPageState();
 }
 
 class _JournalPageState extends State<JournalPage> {
-  String emotions = 'Loading...';
-  String thoughts = 'Loading...';
+  late String date;
+  late String time;
+  late String thoughts;
+  late String emotions;
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchJournalEntry();
   }
 
-  Future<void> fetchData() async {
-    final String apiUrl =
-        'http://172.29.10.200:8080/panic/getListOfJournals/';
-
-    final response = await http.get(Uri.parse(apiUrl));
+  Future<void> fetchJournalEntry() async {
+    final String url =
+        'http://172.29.10.200:8080/panic/getJournalEntry/${widget.selectedID}/';
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
       setState(() {
-        emotions = data['emotions'];
+        Map<String, dynamic> data = jsonDecode(response.body);
+        date = data['date'];
+        time = data['time'];
         thoughts = data['thoughts'];
+        emotions = data['emotions'];
       });
     } else {
-      setState(() {
-        emotions = 'Failed to load data';
-        thoughts = 'Failed to load data';
-      });
+      throw Exception('Failed to load journal entry');
     }
   }
 
@@ -47,26 +46,19 @@ class _JournalPageState extends State<JournalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Journal Page for ${widget.selectedDate}'),
+        title: const Text('Journal Entry'),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20.0),
-          Text(
-            widget.selectedDate,
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 20.0),
-          Text(
-            'Emotions: $emotions',
-            style: TextStyle(fontSize: 15),
-          ),
-          SizedBox(height: 10.0),
-          Text(
-            'Thoughts: $thoughts',
-            style: TextStyle(fontSize: 15),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Date: $date'),
+            Text('Time: $time'),
+            Text('Thoughts: $thoughts'),
+            Text('Emotions: $emotions'),
+          ],
+        ),
       ),
     );
   }
