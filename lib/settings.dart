@@ -12,13 +12,9 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF332d41),
+      backgroundColor: const Color(0xFFFFFBF0),
       appBar: AppBar(
-        title: const Text(
-          'Settings',
-          style: TextStyle(color: Color(0xFFd2c0ff)),
-        ),
-        backgroundColor: const Color(0xFF332d41),
+        backgroundColor: const Color(0xFFFFFBF0),
       ),
       body: Center(
         child: Column(
@@ -28,12 +24,14 @@ class Settings extends StatelessWidget {
               width: 300,
               child: TextField(
                 controller: _controller,
-                style: const TextStyle(color: Color(0xFFd2c0ff)),
+                style: const TextStyle(color: Color(0xFFFFFBF0)),
                 decoration: const InputDecoration(
                   filled: true,
-                  fillColor: Color(0xFF1e192b),
+                  fillColor: Color(0xFF8FA247),
                   labelText: 'IP and Port Number',
-                  labelStyle: TextStyle(color: Color(0xFFd2c0ff)),
+                  labelStyle: TextStyle(
+                    color: Color(0xFFFFFBF0),
+                  ),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -42,8 +40,8 @@ class Settings extends StatelessWidget {
             ElevatedButton(
               onPressed: _changeIP,
               style: ElevatedButton.styleFrom(
-                foregroundColor: const Color(0xFFd2c0ff),
-                backgroundColor: const Color(0xFF4f378a),
+                foregroundColor: const Color(0xFFFFFBF0),
+                backgroundColor: const Color(0xFF647131),
               ),
               child: const Text('Set'),
             ),

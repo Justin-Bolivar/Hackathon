@@ -15,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   static final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     WriteJournalPage(),
@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFEEE29E),
         body: Center(
           child: _widgetOptions.elementAt(_selectedIndex),
         ),
@@ -48,8 +48,10 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.grey,
+          elevation: 0,
+          backgroundColor: const Color(0xFFFFFBF0),
+          selectedItemColor: const Color(0xFF8FA247),
+          unselectedItemColor: const Color(0xFF647131),
           onTap: _onItemTapped,
         ),
       ),

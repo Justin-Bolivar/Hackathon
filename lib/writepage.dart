@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:panic_application/globals.dart';
 
 import 'package:panic_application/settings.dart';
 
@@ -15,7 +14,7 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> _sendPostRequest() async {
-    const String url = 'http://172.30.1.190:8080/panic/create/';
+    const String url = 'http://172.29.10.200:8080//panic/create/';
     final String text = _controller.text;
 
     final DateTime now = DateTime.now();
@@ -54,10 +53,10 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Write Journal Page'),
+        backgroundColor: const Color(0xFFFFFBF0),
         actions: [
           IconButton(
-            color: Colors.white,
+            color: const Color(0xFFFFFBF0),
             icon: const Icon(Icons.settings),
             onPressed: () {
               Navigator.push(
@@ -68,6 +67,7 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           ),
         ],
       ),
+      backgroundColor: const Color(0xFFFFFBF0),
       body: Column(
         children: [
           const SizedBox(
@@ -75,31 +75,38 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           ),
           Text(
             formattedDate,
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF8FA247)),
           ),
           Text(
             formattedTime,
-            style: TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 15),
           ),
           const SizedBox(
             height: 20.0,
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(24),
             child: TextField(
               controller: _controller,
               maxLines: 10,
               expands: false,
               decoration: InputDecoration(
                 hintText: 'Start your Journal.',
+                hintStyle: const TextStyle(
+                  color: Color(0xFFFFFBF0),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 filled: true,
-                fillColor: Colors.grey[200],
+                fillColor: const Color(0xFF8FA247),
               ),
               style: const TextStyle(
                 fontSize: 16,
+                color: const Color(0xFFFFFBF0),
               ),
             ),
           ),
@@ -109,9 +116,8 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           ElevatedButton(
             onPressed: _sendPostRequest,
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.black,
-            ),
+                foregroundColor: const Color(0xFFFFFBF0),
+                backgroundColor: const Color(0xFF647131)),
             child: const Text('Submit'),
           ),
         ],

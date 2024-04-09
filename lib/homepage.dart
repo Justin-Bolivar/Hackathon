@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<String> dates = [];
+  List<int> ids = []; // Declare ids list
 
   @override
   void initState() {
@@ -20,14 +21,16 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchDates() async {
     final String url =
-        'http://172.30.1.190:8080/panic/getListOfJournals/'; // Replace with your API URL
+        'http://172.29.10.200:8080/panic/getListOfJournals/'; // Replace with your API URL
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       setState(() {
-        // Assuming the API returns a list of objects, each with a 'date' field
         List<dynamic> data = jsonDecode(response.body);
         dates = data.map((item) => item['date'] as String).toList();
+
+        // Assuming the API returns a list of objects, each with an 'id' field
+        ids = data.map((item) => item['id'] as int).toList();
       });
     } else {
       throw Exception('Failed to load dates');
@@ -83,7 +86,10 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => JournalPage()),
+                              builder: (context) => JournalPage(
+                                  selectedDate: dates[index],
+                                  selectedID: ids[index]),
+                            ),
                           );
                         },
                         child: Container(
