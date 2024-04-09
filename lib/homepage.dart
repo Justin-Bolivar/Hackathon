@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose() {
     _animationController.dispose();
-    _timer?.cancel(); // Cancel the timer if it is not null
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -54,7 +54,8 @@ class _HomePageState extends State<HomePage>
         ids = data.map((item) => item['id'] as int).toList();
         topEmotions = data.map((item) {
           var topEmotion = item['emotions'][0][0];
-          return '${topEmotion['label']} (${(topEmotion['score'] * 100).toStringAsFixed(2)}%)';
+          var percentage = (topEmotion['score'] * 100).round().toString();
+          return '${topEmotion['label']} ($percentage%)';
         }).toList();
       });
     } else {
@@ -122,7 +123,7 @@ class _HomePageState extends State<HomePage>
                 height: 20,
               ),
               SizedBox(
-                width: 300,
+                width: 400,
                 child: Column(
                   children: List.generate(dates.length, (index) {
                     return Padding(
