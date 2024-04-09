@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart'; // Import the intl package
 
 import 'package:panic_application/settings.dart';
 
@@ -35,6 +36,11 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the current date and time
+    final DateTime now = DateTime.now();
+    final String formattedDate = DateFormat('MMMM d').format(now);
+    final String formattedTime = DateFormat('h:mm a').format(now);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Write Journal Page'),
@@ -56,12 +62,12 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           const SizedBox(
             height: 20.0,
           ),
-          const Text(
-            'April 9',
+          Text(
+            formattedDate,
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
-          const Text(
-            '10 AM',
+          Text(
+            formattedTime,
             style: TextStyle(fontSize: 20),
           ),
           const SizedBox(
