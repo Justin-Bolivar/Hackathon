@@ -19,7 +19,6 @@ class _MyAppState extends State<MyApp> {
   static final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     WriteJournalPage(),
-    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -46,10 +45,6 @@ class _MyAppState extends State<MyApp> {
             BottomNavigationBarItem(
               icon: Icon(Icons.article),
               label: 'Write',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              label: 'Profile',
             ),
           ],
           currentIndex: _selectedIndex,

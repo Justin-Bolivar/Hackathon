@@ -20,7 +20,6 @@ class WriteJournalPage extends StatelessWidget {
             '10 AM',
             style: TextStyle(fontSize: 20),
           ),
-          Text('Emotions'),
           const SizedBox(
             height: 20.0,
           ),
@@ -41,6 +40,17 @@ class WriteJournalPage extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          ElevatedButton(
+            onPressed: null,
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.black,
+            ),
+            child: const Text('Submit'),
           ),
         ],
       ),
