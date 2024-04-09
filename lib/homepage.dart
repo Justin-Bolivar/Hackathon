@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:math'; // Import the math library for random number generation
 
 import 'package:panic_application/journalpage.dart';
 
@@ -9,19 +12,38 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   List<String> dates = [];
-  List<int> ids = []; // Declare ids list
+  List<int> ids = [];
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  int bpm = 80; // Initial BPM value
 
   @override
   void initState() {
     super.initState();
     fetchDates();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 1.0, end: 1.3).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    // Start updating the BPM value periodically
+    startBPMUpdate();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> fetchDates() async {
-    final String url =
-        'http://172.29.10.200:8080/panic/getListOfJournals/'; // Replace with your API URL
+    const String url = 'http://172.29.10.200:8080/panic/getListOfJournals/';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -29,7 +51,6 @@ class _HomePageState extends State<HomePage> {
         List<dynamic> data = jsonDecode(response.body);
         dates = data.map((item) => item['date'] as String).toList();
 
-        // Assuming the API returns a list of objects, each with an 'id' field
         ids = data.map((item) => item['id'] as int).toList();
       });
     } else {
@@ -37,11 +58,20 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void startBPMUpdate() {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        bpm = Random().nextInt(21) + 70;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFFFBF0),
       appBar: AppBar(
-        title: const Text('Home Page'),
+        backgroundColor: const Color(0xFFFFFBF0),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -49,28 +79,40 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               const SizedBox(height: 20.0),
-              const Row(
-                children: [
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: 50.0,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      '80',
-                      style: TextStyle(color: Colors.red, fontSize: 50.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 5.0),
-                    child: Text(
-                      'bpm',
-                      style: TextStyle(fontSize: 20.0),
-                    ),
-                  ),
-                ],
+              AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Row(
+                    children: [
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      Transform.scale(
+                        scale: _animation.value,
+                        child: const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: 50.0,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          '$bpm',
+                          style: const TextStyle(
+                              color: Colors.red, fontSize: 50.0),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 5.0),
+                        child: Text(
+                          'bpm',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(
                 height: 20,
@@ -94,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.grey,
+                            color: const Color(0xFF8FA247),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           width: 300,
@@ -102,7 +144,10 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               dates[index],
-                              style: TextStyle(fontSize: 20.0),
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                color: Color(0xFFFFFBF0),
+                              ),
                             ),
                           ),
                         ),

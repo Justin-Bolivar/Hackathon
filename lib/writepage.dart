@@ -78,7 +78,7 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
             style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF8FA247)),
+                color: Color(0xFF8FA247)),
           ),
           Text(
             formattedTime,
