@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:pie_chart/pie_chart.dart';
 import 'dart:convert';
 
 import 'globals.dart';
@@ -17,7 +20,7 @@ class JournalPage extends StatefulWidget {
 class _JournalPageState extends State<JournalPage> {
   Future<Map<String, dynamic>> fetchJournalEntry() async {
     String url =
-        'http://${Globals.ipAddress}/panic/${widget.selectedID}/deleteUpdateEntry/';
+        'http://172.29.10.200:8080//panic/${widget.selectedID}/deleteUpdateEntry/';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -50,7 +53,8 @@ class _JournalPageState extends State<JournalPage> {
         future: fetchJournalEntry(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator(color: Color(0xFF8FA247)));
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
@@ -62,15 +66,39 @@ class _JournalPageState extends State<JournalPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Date: ${snapshot.data!['date']}'),
-                    Text('Time: ${snapshot.data!['time']}'),
-                    Text('Thoughts: ${snapshot.data!['thoughts']}'),
-                    Text('Emotions:'),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: emotionPercentages.entries
-                          .map((entry) => Text('${entry.key}: ${entry.value}%'))
-                          .toList(),
+                    Center(
+                      child: Text(
+                        '${snapshot.data!['date']}',
+                        style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF8FA247)),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        '${snapshot.data!['time']}',
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF8FA247),
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text('${snapshot.data!['thoughts']}',
+                            style: const TextStyle(color: Color(0xFFFFFBF0))),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    PieChart(
+                      dataMap: emotionPercentages
+                          .map((key, value) => MapEntry(key, value.toDouble())),
+                      chartType: ChartType.ring,
+                      chartRadius: MediaQuery.of(context).size.width / 3,
                     ),
                   ],
                 ),

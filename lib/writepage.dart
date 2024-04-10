@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-
 import 'package:panic_application/settings.dart';
-
-import 'globals.dart';
 
 class WriteJournalPage extends StatefulWidget {
   @override
@@ -16,13 +13,11 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> _sendPostRequest() async {
-    String url = 'http://${Globals.ipAddress}//panic/create/';
+    String url = 'http://172.29.10.200:8080/panic/create/';
     final String text = _controller.text;
-
     final DateTime now = DateTime.now();
     final String formattedDate = DateFormat('MMMM d').format(now);
     final String formattedTime = DateFormat('h:mm a').format(now);
-
     final String dateString = '$formattedDate';
     final String timeString = ' $formattedTime';
 
@@ -35,11 +30,12 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
         <String, dynamic>{
           'date': dateString,
           'time': timeString,
-          'isPanic': true,
+          'isPanic': true, // Check if this value is correct
           'thoughts': text,
         },
       ),
     );
+
     if (response.statusCode == 201) {
       print('POST request successful');
     } else {
@@ -78,9 +74,10 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           Text(
             formattedDate,
             style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF8FA247)),
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF8FA247),
+            ),
           ),
           Text(
             formattedTime,
@@ -101,7 +98,7 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
                   color: Color(0xFFFFFBF0),
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(16.0),
                 ),
                 filled: true,
                 fillColor: const Color(0xFF8FA247),
@@ -118,8 +115,9 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           ElevatedButton(
             onPressed: _sendPostRequest,
             style: ElevatedButton.styleFrom(
-                foregroundColor: const Color(0xFFFFFBF0),
-                backgroundColor: const Color(0xFF647131)),
+              backgroundColor: const Color(0xFF647131),
+              foregroundColor: const Color(0xFFFFFBF0),
+            ),
             child: const Text('Submit'),
           ),
         ],
