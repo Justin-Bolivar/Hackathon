@@ -13,40 +13,54 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
   final TextEditingController _controller = TextEditingController();
 
   Future<void> _sendPostRequest() async {
-    String url = 'http://172.29.10.200:8080/panic/create/';
+    String url = 'http://192.168.1.11:8080/panic/create/';
     final String text = _controller.text;
     final DateTime now = DateTime.now();
-    final String formattedDate = DateFormat('MMMM d').format(now);
+    final String formattedDate = DateFormat('MMMM\n d').format(now);
     final String formattedTime = DateFormat('h:mm a').format(now);
     final String dateString = '$formattedDate';
     final String timeString = ' $formattedTime';
 
-    final response = await http.post(
-      Uri.parse(url),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(
-        <String, dynamic>{
-          'date': dateString,
-          'time': timeString,
-          'isPanic': true, // Check if this value is correct
-          'thoughts': text,
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
         },
-      ),
-    );
+        body: jsonEncode(
+          <String, dynamic>{
+            'date': dateString,
+            'time': timeString,
+            'isPanic': true, // Check if this value is correct
+            'thoughts': text,
+          },
+        ),
+      );
 
-    if (response.statusCode == 201) {
-      print('POST request successful');
-    } else {
-      throw Exception('Failed to send POST request');
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Journal Successfully Posted'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        throw Exception('Failed to Post Journal Try Again');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to send POST request: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
-    final String formattedDate = DateFormat('MMMM d').format(now);
+    final String formattedDate = DateFormat('MMMM\n d').format(now);
     final String formattedTime = DateFormat('h:mm a').format(now);
 
     return Scaffold(
@@ -71,17 +85,36 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           const SizedBox(
             height: 20.0,
           ),
-          Text(
-            formattedDate,
-            style: const TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF8FA247),
+          Center(
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${DateFormat('MMMM').format(now)}\n',
+                    style: const TextStyle(
+                      fontSize: 30,
+                      color: Color(0xFF8FA247),
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${DateFormat('d').format(now)}\n',
+                    style: const TextStyle(
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF8FA247),
+                    ),
+                  ),
+                  TextSpan(
+                    text: '$formattedTime\n',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          Text(
-            formattedTime,
-            style: const TextStyle(fontSize: 15),
           ),
           const SizedBox(
             height: 20.0,
@@ -93,32 +126,42 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
               maxLines: 10,
               expands: false,
               decoration: InputDecoration(
-                hintText: 'Start your Journal.',
+                hintText: 'Breath, Write and start...',
                 hintStyle: const TextStyle(
                   color: Color(0xFFFFFBF0),
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(24.0),
                 ),
                 filled: true,
                 fillColor: const Color(0xFF8FA247),
               ),
               style: const TextStyle(
                 fontSize: 16,
-                color: const Color(0xFFFFFBF0),
+                color: Color(0xFFFFFBF0),
               ),
             ),
           ),
           const SizedBox(
             height: 20.0,
           ),
-          ElevatedButton(
-            onPressed: _sendPostRequest,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF647131),
-              foregroundColor: const Color(0xFFFFFBF0),
+          Container(
+            width: 70,
+            height: 70,
+            decoration: const BoxDecoration(
+              color: Color(0xFFC69F15),
+              shape: BoxShape.circle,
             ),
-            child: const Text('Submit'),
+            child: Center(
+              child: IconButton(
+                icon: const Icon(
+                  Icons.send,
+                  size: 30,
+                ),
+                color: Colors.white,
+                onPressed: _sendPostRequest,
+              ),
+            ),
           ),
         ],
       ),

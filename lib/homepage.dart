@@ -1,11 +1,28 @@
+// ignore_for_file: avoid_print, library_private_types_in_public_api, use_key_in_widget_constructors
+
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:math';
-import 'package:panic_application/journalpage.dart';
-import 'globals.dart';
+
+import 'journalpage.dart';
+import 'writepage.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
+    );
+  }
+}
 
 class HomePage extends StatefulWidget {
   @override
@@ -34,12 +51,12 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose() {
     _animationController.dispose();
-    _timer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
 
   Future<void> _fetchDates() async {
-    String url = 'http://172.29.10.200:8080/panic/getListOfJournals/';
+    String url = 'http://192.168.1.11:8080/panic/getListOfJournals/';
     try {
       final response = await http.get(Uri.parse(url));
 
@@ -97,20 +114,26 @@ class _HomePageState extends State<HomePage>
       ),
       body: Stack(
         children: [
-          Center(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  const SizedBox(height: 20.0),
-                  SizedBox(
-                    width: 400,
-                    child: Column(
-                      children: List.generate(dates.length, _buildJournalCard),
-                    ),
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                const SizedBox(height: 20.0),
+                SizedBox(
+                  width: 400,
+                  child: Column(
+                    children: [
+                      const Text('Recent Journals',
+                          style: TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFC69F15))),
+                      ...List.generate(dates.length, _buildJournalCard),
+                      const SizedBox(height: 20.0),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           if (_isLoading)
@@ -119,6 +142,29 @@ class _HomePageState extends State<HomePage>
             ),
         ],
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: SizedBox(
+          width: 80,
+          height: 80,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WriteJournalPage()),
+              );
+            },
+            backgroundColor: const Color(0xFFC69F15),
+            shape: const CircleBorder(),
+            child: const Icon(
+              Icons.add_circle,
+              size: 60,
+              color: Color(0xFFFFFBF0),
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -145,6 +191,7 @@ class _HomePageState extends State<HomePage>
           style: const TextStyle(
             color: Colors.red,
             fontSize: 50.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(width: 5.0),
@@ -152,7 +199,6 @@ class _HomePageState extends State<HomePage>
           'bpm',
           style: TextStyle(
             fontSize: 20.0,
-            color: Colors.red,
           ),
         ),
       ],
@@ -185,7 +231,7 @@ class _HomePageState extends State<HomePage>
           height: 120,
           decoration: BoxDecoration(
             color: const Color(0xFF8FA247),
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(24.0),
           ),
           width: 320,
           child: Padding(
@@ -198,7 +244,7 @@ class _HomePageState extends State<HomePage>
                 Text(
                   topEmotions[index],
                   style: const TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 19.0,
                     color: Color(0xFFFFFBF0),
                   ),
                 ),

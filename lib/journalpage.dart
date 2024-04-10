@@ -20,7 +20,7 @@ class JournalPage extends StatefulWidget {
 class _JournalPageState extends State<JournalPage> {
   Future<Map<String, dynamic>> fetchJournalEntry() async {
     String url =
-        'http://172.29.10.200:8080//panic/${widget.selectedID}/deleteUpdateEntry/';
+        'http://192.168.1.11:8080//panic/${widget.selectedID}/deleteUpdateEntry/';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
