@@ -31,7 +31,7 @@ class _WriteJournalPageState extends State<WriteJournalPage> {
           <String, dynamic>{
             'date': dateString,
             'time': timeString,
-            'isPanic': true, // Check if this value is correct
+            'isPanic': true,
             'thoughts': text,
           },
         ),

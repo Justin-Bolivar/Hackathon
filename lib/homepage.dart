@@ -70,11 +70,9 @@ class _HomePageState extends State<HomePage>
           return '${topEmotion['label']} ($percentage%)';
         }).toList();
       } else {
-        // Handle API error
         print('Failed to load dates: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle network or other exceptions
       print('Error fetching dates: $e');
     } finally {
       _isLoading = false;
@@ -125,11 +123,12 @@ class _HomePageState extends State<HomePage>
                     children: [
                       const Text('Recent Journals',
                           style: TextStyle(
-                              fontSize: 25.0,
+                              fontSize: 30.0,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFFC69F15))),
-                      ...List.generate(dates.length, _buildJournalCard),
                       const SizedBox(height: 20.0),
+                      ...List.generate(dates.length, _buildJournalCard),
+                      const SizedBox(height: 100.0),
                     ],
                   ),
                 ),
@@ -157,7 +156,7 @@ class _HomePageState extends State<HomePage>
             backgroundColor: const Color(0xFFC69F15),
             shape: const CircleBorder(),
             child: const Icon(
-              Icons.add_circle,
+              Icons.add,
               size: 60,
               color: Color(0xFFFFFBF0),
             ),
@@ -246,6 +245,7 @@ class _HomePageState extends State<HomePage>
                   style: const TextStyle(
                     fontSize: 19.0,
                     color: Color(0xFFFFFBF0),
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
