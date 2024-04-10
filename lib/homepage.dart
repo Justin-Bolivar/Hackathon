@@ -119,17 +119,19 @@ class _HomePageState extends State<HomePage>
                 const SizedBox(height: 20.0),
                 SizedBox(
                   width: 400,
-                  child: Column(
-                    children: [
-                      const Text('Recent Journals',
-                          style: TextStyle(
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFC69F15))),
-                      const SizedBox(height: 20.0),
-                      ...List.generate(dates.length, _buildJournalCard),
-                      const SizedBox(height: 100.0),
-                    ],
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const Text('Recent Journals',
+                            style: TextStyle(
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFC69F15))),
+                        const SizedBox(height: 20.0),
+                        ...List.generate(dates.length, _buildJournalCard),
+                        const SizedBox(height: 100.0),
+                      ],
+                    ),
                   ),
                 ),
               ],
